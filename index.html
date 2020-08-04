@@ -12,47 +12,117 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input class="form-control" id="generatePinNumber" type="text">
+                    <button class="generate-btn" onclick="pinGenerator()">Generate Pin</button>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" id="pinInputSection">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input class="form-control" id="pinNumber" type="text">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                              <div class="button" onclick="insertNumber(7)">7</div>
+                              <div class="button" onclick="insertNumber(8)">8</div>
+                              <div class="button" onclick="insertNumber(9)">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                              <div class="button" onclick="insertNumber(4)">4</div>
+                              <div class="button" onclick="insertNumber(5)">5</div>
+                              <div class="button" onclick="insertNumber(6)">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                              <div class="button" onclick="insertNumber(1)">1</div>
+                              <div class="button" onclick="insertNumber(2)">2</div>
+                              <div class="button" onclick="insertNumber(3)">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button"><</div>
-                                <div class="button">0</div>
-                                <div class="button">C</div>
+                                <div class="button" onclick="deleteNumber()"><</div>
+                                <div class="button" onclick="insertNumber(0)">0</div>
+                                <div class="button" onclick="clearNumber()">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button type="submit" class="submit-btn" id="submitBtn" onclick="isMatch()">Submit</button>
+                                <p class="action-left"><span id="actionCountdown">3</span> try left</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p class="notify d-none" id="cross">❌ Pin Didn't Match, Please try again</p>
+            <p class="notify d-none" id="signed">✅ Pin Matched... Secret door is opening for you</p>
         </div>
     </div>
 </body>
+<script>
+
+    // Pin Generate 
+    function pinGenerator(){
+        document.getElementById("generatePinNumber").value = Math.floor(1000 +Math.random() * 9000)
+    }
+
+    // // Insert Number 
+    function insertNumber(number){
+        const existingNumber = document.getElementById("pinNumber").value;
+        document.getElementById("pinNumber").value = existingNumber + number;
+    }
+
+    // Clear Pin Number
+    function clearNumber(){
+        document.getElementById("pinNumber").value = '';
+    } 
+
+    // delete Number
+    function deleteNumber(){
+        const presentNumber = document.getElementById("pinNumber").value;
+        if(presentNumber != ''){
+           document.getElementById("pinNumber").value = presentNumber.slice(0, -1);
+        }
+    }
+
+    //Pin Matching 
+    function isMatch(){
+            const generatePin = document.getElementById("generatePinNumber").value;
+            const pinNumber = document.getElementById("pinNumber").value;
+            if(pinNumber == ''){
+                alert("Please Enter Your Pin Number");
+            }
+            else if(document.getElementById("generatePinNumber").value === document.getElementById("pinNumber").value){
+                document.getElementById('signed').style.display = "block";
+                document.getElementById('actions-left').style.display = "none";
+                document.getElementById('cross').style.display = "none";
+            }
+            else{
+                notify("cross");
+            }
+        }
+        //Action count
+        function actionCount(){
+            const actionCount = parseInt(document.getElementById("actionCountdown").innerText);
+                const actionLeft = document.getElementById("actionCountdown").innerText = actionCount -1;
+        }
+
+        //Notify Function
+        function notify(id){
+            document.getElementById("pinGeneratorSection").style.display = "none";
+            document.getElementById("pinInputSection").style.display = "none";
+            if(id == "signed"){
+                document.getElementById("cross").style.display = "none";
+                document.getElementById("signed").style.display = "block";
+            }
+            else{
+                document.getElementById("signed").style.display = "none";
+                document.getElementById("cross").style.display = "block";
+            }
+        }
+
+        //For Try Again
+        function returnToTry(){
+            actionCount();
+            document.getElementById("cross").style.display = "none";
+            document.getElementById("pinGeneratorSection").style.display = "block";
+            document.getElementById("pinInputSection").style.display = "block";
+        }
+</script>
 </html>
